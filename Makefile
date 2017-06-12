@@ -6,24 +6,31 @@ CPPFLAGS = -Wall -Werror -g -std=$(STD)
 
 
 SRC = lexer.cpp \
-	  parser.cpp 
+	  parser.cpp  
+
+TESTS = lexer
 
 OBJS = $(SRC:.cpp=.o)
 
+test: test_lexer test_parser
 
 .PHONY: test
-
 
 %.o: %.cpp
 	$(CC) $(CPPFLAGS) -c $< $(LLVMFLAGS) -o $@ -fexceptions
 
 
-test_lexer: $(OBJS) test_lexer.cpp
-	$(CC) $(CPPFLAGS) test_lexer.cpp $(OBJS) $(LLVMFLAGS) -o test_lexer 
-	./test_lexer 
+test_lexer.out: test_lexer.cpp $(OBJS)
+	$(CC) $(CPPFLAGS) $< $(OBJS) $(LLVMFLAGS) -o $@ 
 
-test: test_lexer
-	test_lexer
+test_lexer: test_lexer.out
+	./test_lexer.out
+
+test_parser.out: test_parser.cpp $(OBJS)
+	$(CC) $(CPPFLAGS) $< $(OBJS) $(LLVMFLAGS) -o $@ 
+
+test_parser: test_parser.out
+	./test_parser.out
 
 clean:
-	rm -rf *.out *.o test_lexer *.dwo
+	rm -rf *.out *.o *.dwo 

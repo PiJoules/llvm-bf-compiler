@@ -2,6 +2,11 @@
 #define _BF_H
 
 #include <istream>
+#include <memory>
+#include "llvm/IR/Module.h"
+#include "llvm/IR/LLVMContext.h"
+
+using namespace llvm;
 
 #define PTR_INC '>'
 #define PTR_DEC '<'
@@ -34,5 +39,8 @@ class Lexer {
 
         virtual ~Lexer();
 };
+
+std::unique_ptr<Module> compile_lexer(const Lexer& lex, LLVMContext& context);
+//Module* compile_lexer(const Lexer& lex);
 
 #endif

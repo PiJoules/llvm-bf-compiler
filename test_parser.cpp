@@ -3,11 +3,10 @@
 
 int main(){
     Lexer lex;
-
-    LLVMContext context;
-
-    auto mod = compile_lexer(lex, context);
-    //delete mod;
+    
+    Parser p;
+    p.parse(lex);
+    p.dump();
 
     return 0;
 }

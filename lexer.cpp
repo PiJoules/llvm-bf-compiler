@@ -46,13 +46,9 @@ LexToken Lexer::token(){
 }
 
 
-Lexer::~Lexer(){
-    delete stream;
-}
-
-
 void Lexer::input(const std::string& code){
-    stream = new std::istringstream(code);
+    std::unique_ptr<std::istream> code_stream(new std::istringstream(code));
+    stream = std::move(code_stream);
 }
 
 

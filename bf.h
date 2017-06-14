@@ -1,10 +1,16 @@
 #ifndef _BF_H
 #define _BF_H
 
+#include <iostream>
 #include <istream>
 #include <memory>
 #include <vector>
 #include <unordered_map>
+#include <stdexcept>
+#include <sstream>
+#include <string> 
+#include <stack>
+#include <utility>
 
 #include "llvm/IR/Module.h"
 #include "llvm/IR/LLVMContext.h"
@@ -41,12 +47,10 @@ class Lexer {
     public:
         LexToken token();
         void input(const std::string& code);
-        bool eof();
+        bool eof() const;
 
         virtual ~Lexer(){}
 };
-
-std::unique_ptr<Module> compile_lexer(const Lexer& lex, LLVMContext& context);
 
 class Parser {
     private:
@@ -54,23 +58,23 @@ class Parser {
         std::unique_ptr<Module> mod;
         Value* cells;  // Owned by temp IRBuilder
         Value* idx_ptr;
-        int bracket_count = 0;
+        std::stack<std::shared_ptr<std::pair<BasicBlock*, BasicBlock*>>> loop_pairs;
 
         // BF instructions
         void ptr_inc(IRBuilder<>&);
-        void ptr_dec();
-        void val_inc();
-        void val_dec();
-        void print_char();
-        void read_char();
-        void while_start();
-        void while_end();
+        void ptr_dec(IRBuilder<>&);
+        void val_inc(IRBuilder<>&);
+        void val_dec(IRBuilder<>&);
+        void print_char(IRBuilder<>&);
+        void read_char(IRBuilder<>&);
+        void while_start(IRBuilder<>&);
+        void while_end(IRBuilder<>&);
 
         void declare_c_functions();
-        void create_main_block(const Lexer&);
+        void create_main_block(Lexer&);
 
     public:
-        void parse(const Lexer& lex);
+        void parse(Lexer& lex);
         void dump();
 
         virtual ~Parser(){}

@@ -1,13 +1,14 @@
-#include <string> 
-#include <sstream>
-#include <stdexcept>
-
 #include "bf.h"
 
 
 LexToken Lexer::token(){
-    if (!stream){
-        throw std::runtime_error("No stream initialized.");
+    if (eof()){
+        return {
+            EOF,
+            lineno,
+            colno,
+            lexpos,
+        };
     }
 
     char c;
@@ -52,6 +53,9 @@ void Lexer::input(const std::string& code){
 }
 
 
-bool Lexer::eof(){
+bool Lexer::eof() const {
+    if (!stream){
+        return true;
+    }
     return stream->peek() == EOF;
 }
